@@ -10,7 +10,7 @@
 
 #=====================================================================
 resource "aws_db_instance" "terr_db" {
-  identifier             = "terr-wp-db"
+  identifier             = "terraform-database"
   instance_class         = "db.t3.micro"
   allocated_storage      = 10
   max_allocated_storage  = 0 #to disable Storage Autoscaling.

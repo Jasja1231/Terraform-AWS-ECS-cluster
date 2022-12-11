@@ -2,7 +2,6 @@
     #Cluster
 #=====================================================================
 
-
 resource "aws_ecs_cluster" "terr_cluster" {
   name = "terr-cluster"
 }
@@ -10,7 +9,6 @@ resource "aws_ecs_cluster" "terr_cluster" {
 #=====================================================================
     #Docker image resource
 #=====================================================================
-
 
 resource "docker_image" "ubuntu" {
   name = "wordpress:latest"
@@ -40,8 +38,6 @@ resource "docker_image" "ubuntu" {
 # -The settings for managed scaling and managed termination protection.(?)
     
 #=====================================================================
-
-
 resource "aws_ecs_cluster_capacity_providers" "terr_esc_capacity_providers" {
   cluster_name = aws_ecs_cluster.terr_cluster.name
 
@@ -116,7 +112,8 @@ resource "aws_lb_target_group" "terr_target_group" {
 }
 
 #=====================================================================
-    #Create an IAM role for instances to use when they are launched ( but has to be created auto?)
+    #Create an IAM role for instances to use when they are launched
+    # ( but has to be created auto?)   
 #=====================================================================
 data "aws_iam_policy_document" "ecs_agent" {
   statement {
