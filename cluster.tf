@@ -7,6 +7,28 @@ resource "aws_ecs_cluster" "terr_cluster" {
   name = "terr-cluster"
 }
 
+#=====================================================================
+    #Docker image resource
+#=====================================================================
+
+
+resource "docker_image" "ubuntu" {
+  name = "wordpress:latest"
+}
+
+
+#=====================================================================
+    #Task definition
+    #Revision of an ECS task definition to be used in aws_ecs_service
+#=====================================================================
+# resource "aws_ecs_task_definition" "service" {
+
+# }
+
+
+
+
+
 
 #=====================================================================
     #Capasity provider 
@@ -42,7 +64,7 @@ resource "aws_ecs_capacity_provider" "terr_esc_capacity_provider" {
 
 
 #=====================================================================
-    #Autoscaling group
+    #Autoscaling group + launch configuration
 #=====================================================================
 
 resource "aws_autoscaling_group" "terr_autoscaling_group" {
@@ -68,14 +90,16 @@ resource "aws_autoscaling_group" "terr_autoscaling_group" {
 resource "aws_launch_configuration" "terr_ecs_launch_config" {
     name = "terr-ecs-launch-config"
     #- (Required) The EC2 image ID to launch.
-    image_id             = "ami-xxxxxx"  # TO DO <----------------------------
+    image_id             = "ami-0fab44817c875e415"  # TO DO , this is copied from prev conf <----------------------------
     iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
     security_groups      = [aws_security_group.terr_public_sec_group.id]
-    #user_data            = "#!/bin/bash\necho ECS_CLUSTER=my-cluster >> /etc/ecs/ecs.config"
+    user_data            = "#!/bin/bash\necho ECS_CLUSTER=terr-cluster >> /etc/ecs/ecs.config"
     instance_type        = "t2.micro"
 
     #(Optional) The ID of a ClassicLink-enabled VPC. Only applies to EC2-Classic instances. 
     #vpc_classic_link_id  = 
+
+    key_name = "ec2-demo-key"
 }
 
 
@@ -112,7 +136,7 @@ resource "aws_iam_role" "ecs_agent" {
 
 
 resource "aws_iam_role_policy_attachment" "ecs_agent" {
-  role       = "aws_iam_role.ecs_agent.name"
+  role       = aws_iam_role.ecs_agent.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
