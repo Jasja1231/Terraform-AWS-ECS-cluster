@@ -1,4 +1,8 @@
-#Creating VPC - terr_vpc only local terraform name
+
+#=====================================================================
+ #Creating VPC - terr_vpc only local terraform name
+#=====================================================================
+
 resource "aws_vpc" "terr_vpc" {
   cidr_block = "10.0.0.0/16"
 
@@ -28,7 +32,7 @@ resource "aws_subnet" "terr_pub_subnet" {
 }
 
 
-#Private for db
+#Private for RDS
 resource "aws_subnet" "terr_priv_subnet" {
   vpc_id            = aws_vpc.terr_vpc.id
   cidr_block        = "10.0.160.0/24" #256 
