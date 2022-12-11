@@ -24,3 +24,11 @@ provider "aws" {
   shared_credentials_files = ["/home/yaryna/.aws/credentials"]
   profile                  = "vscode"
 } 
+
+#=====================================================================
+    #Docker
+#=====================================================================
+
+provider "docker" {
+  host = "unix:///var/run/docker.sock"
+}
