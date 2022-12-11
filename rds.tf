@@ -24,14 +24,12 @@ resource "aws_db_instance" "terr_db" {
   #db conf
   db_name = var.db_name
   parameter_group_name = "default.mysql8.0"
-  
 
   #network conf
   db_subnet_group_name   = aws_db_subnet_group.terr_db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.terr_private_sec_group.id]
   publicly_accessible    = false
   skip_final_snapshot    = true
-
 
   backup_retention_period = 0
   auto_minor_version_upgrade = false
