@@ -19,7 +19,10 @@ resource "docker_image" "ubuntu" {
     #Task definition
     #Revision of an ECS task definition to be used in aws_ecs_service
 #=====================================================================
-# resource "aws_ecs_task_definition" "service" {
+# resource "aws_ecs_task_definition" "terr_task_definition" {
+#     #A unique name for your task definition.
+#     family = "terr-task-definition"
+
 
 # }
 
@@ -77,19 +80,20 @@ resource "aws_autoscaling_group" "terr_autoscaling_group" {
   health_check_grace_period = 300
   health_check_type         = "EC2"
 
-  #target_group_arns = # TO DO <----------------------------
+  target_group_arns = aws_lb_target_group.terr_target_group.arn
 
    launch_configuration   = aws_launch_configuration.terr_ecs_launch_config.name
 }
 
 
+#Provides a resource to create a new launch configuration, used for autoscaling groups
 resource "aws_launch_configuration" "terr_ecs_launch_config" {
     name = "terr-ecs-launch-config"
     #- (Required) The EC2 image ID to launch.
-    image_id             = "ami-0fab44817c875e415"  # TO DO , this is copied from prev conf <----------------------------
+    image_id             = docker_image.ubuntu.id  # TO DO ,change <----------------------------
     iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
     security_groups      = [aws_security_group.terr_public_sec_group.id]
-    user_data            = "#!/bin/bash\necho ECS_CLUSTER=terr-cluster >> /etc/ecs/ecs.config"
+    user_data            = "#!/bin/bash\necho ECS_CLUSTER=terr-cluster >> /etc/ecs/ecs.config"  #insert terr-cluster as var
     instance_type        = "t2.micro"
 
     #(Optional) The ID of a ClassicLink-enabled VPC. Only applies to EC2-Classic instances. 
