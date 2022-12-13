@@ -10,9 +10,38 @@ resource "aws_ecs_cluster" "terr_cluster" {
     #Docker image resource
 #=====================================================================
 
-resource "docker_image" "ubuntu" {
+resource "docker_image" "wordpress_image" {
   name = "wordpress:latest"
 }
+
+
+#=====================================================================
+    #Service aws_ecs_service
+#=====================================================================
+# resource "aws_ecs_service" "terr_sevice" {
+#   name                = "terr-service"
+#   cluster             = aws_ecs_cluster.terr_cluster
+#   task_definition     = aws_ecs_task_definition.terr_task_definition.id
+#   desired_count       = 1
+#   scheduling_strategy = "REPLICA"
+
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.terr_target_group.arn
+#     container_name   = "terr-wordpress-container"
+#     container_port   = 80
+#   }
+#   deployment_controller {
+#     type = "ECS"
+#   }
+
+  #To prevent a race condition during service deletion, make sure to set 
+  #depends_on to the related aws_iam_role_policy; otherwise, the policy 
+  #may be destroyed too soon and the ECS service will then get stuck in 
+  #the DRAINING state
+  # depends_on = [ aws_iam_role_policy ..]
+# }
+
+
 
 
 #=====================================================================
@@ -23,7 +52,8 @@ resource "docker_image" "ubuntu" {
 #     #A unique name for your task definition.
 #     family = "terr-task-definition"
 
-
+#     container_definitions    = ""
+#     network_mode            = "bridge"
 # }
 
 
@@ -82,15 +112,16 @@ resource "aws_autoscaling_group" "terr_autoscaling_group" {
 
   target_group_arns = aws_lb_target_group.terr_target_group.arn
 
-   launch_configuration   = aws_launch_configuration.terr_ecs_launch_config.name
+  launch_configuration   = aws_launch_configuration.terr_ecs_launch_config.name
 }
 
 
-#Provides a resource to create a new launch configuration, used for autoscaling groups
+#Provides a resource to create a new launch configuration
+#used for autoscaling groups
 resource "aws_launch_configuration" "terr_ecs_launch_config" {
     name = "terr-ecs-launch-config"
     #- (Required) The EC2 image ID to launch.
-    image_id             = docker_image.ubuntu.id  # TO DO ,change <----------------------------
+    image_id             = "ami-0fab44817c875e415" # TO DO ,change(?) <----------------------------
     iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
     security_groups      = [aws_security_group.terr_public_sec_group.id]
     user_data            = "#!/bin/bash\necho ECS_CLUSTER=terr-cluster >> /etc/ecs/ecs.config"  #insert terr-cluster as var
