@@ -73,14 +73,36 @@ resource "aws_ecs_task_definition" "terr_task_definition" {
           containerPort = 80,
           hostPort      = 80,
           protocol      = "tcp"
+        }
+        # ,
+        # {
+        #   name          = "terr-wp-apahce-container-443-tcp"
+        #   containerPort = 443,
+        #   hostPort      = 443,
+        #   protocol      = "tcp"
+        # },
+      ]
+
+      #ENV VAR
+      environment = [
+        {
+          name =  "WORDPRESS_DB_HOST"
+          value = aws_db_instance.terr_db.address
         },
         {
-          name          = "terr-wp-apahce-container-443-tcp"
-          containerPort = 443,
-          hostPort      = 443,
-          protocol      = "tcp"
+          name = "WORDPRESS_DB_NAME"
+          value = var.db_name
         },
+        {
+          name  = "WORDPRESS_DB_PASSWORD"
+          value =  var.db_password
+        },
+        {
+          name = "WORDPRESS_DB_USER",
+          value =  var.db_username
+        }
       ]
+      #ENV VAR
     }
   ])
   #ARN of the task execution role that the Amazon ECS container agent and the Docker daemon can assume.
@@ -230,6 +252,14 @@ resource "aws_lb_target_group" "terr_target_group_ssh" {
   target_type = "instance"
   vpc_id      = aws_vpc.terr_vpc.id
 }
+
+# resource "aws_lb_target_group" "terr_target_group_443" {
+#   name        = "terr-target-group-instance-ssh"
+#   port        = 443
+#   protocol    = "TCP"
+#   target_type = "instance"
+#   vpc_id      = aws_vpc.terr_vpc.id
+# }
 
 
 resource "aws_lb" "terr_load_balancer" {
