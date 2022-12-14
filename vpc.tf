@@ -4,7 +4,7 @@
 #=====================================================================
 
 resource "aws_vpc" "terr_vpc" {
-  cidr_block = "10.1.0.0/16"  #65,536
+  cidr_block = "10.1.0.0/16" #65,536
 
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -33,7 +33,7 @@ resource "aws_subnet" "terr_pub_subnet" {
 
 resource "aws_subnet" "terr_pub_subnet_1b" {
   vpc_id            = aws_vpc.terr_vpc.id
-  cidr_block        = "10.1.2.0/24" 
+  cidr_block        = "10.1.2.0/24"
   availability_zone = "eu-central-1b"
   #- (Optional) Specify true to indicate that instances 
   #launched into the subnet should be assigned a public IP address.
