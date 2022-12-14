@@ -1,5 +1,5 @@
 #=====================================================================
-    #Public access 0.0.0.0 security group allowing all traffic
+#Public access 0.0.0.0 security group allowing all traffic
 #=====================================================================
 
 resource "aws_security_group" "terr_public_sec_group" {
@@ -7,7 +7,7 @@ resource "aws_security_group" "terr_public_sec_group" {
   description = "For public access security group, allow http https ssh inbound traffic"
   vpc_id      = aws_vpc.terr_vpc.id
   #entering 
-  
+
   ingress {
     description = "SSH "
     from_port   = 22
@@ -47,13 +47,13 @@ resource "aws_security_group" "terr_public_sec_group" {
 
 
 #=====================================================================
-    #Private access security group for RDC DB
+#Private access security group for RDC DB
 #=====================================================================
 resource "aws_security_group" "terr_private_sec_group" {
   name        = "terr_private_securitygroup"
   description = "Private access security group for db"
   vpc_id      = aws_vpc.terr_vpc.id
-#in
+  #in
   ingress {
     description     = "DB"
     from_port       = 3306
@@ -61,7 +61,7 @@ resource "aws_security_group" "terr_private_sec_group" {
     protocol        = "tcp"
     security_groups = [aws_security_group.terr_public_sec_group.id]
   }
-#out
+  #out
   egress {
     from_port   = 0
     to_port     = 0

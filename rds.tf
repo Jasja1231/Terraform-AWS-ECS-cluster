@@ -1,5 +1,5 @@
 #=====================================================================
-    #RDS instance resource.
+#RDS instance resource.
 
 #MySQL
 # Constraints to the amount of storage for each storage type are the following:
@@ -10,19 +10,19 @@
 
 #=====================================================================
 resource "aws_db_instance" "terr_db" {
-  identifier             = "terraform-database"
-  instance_class         = "db.t3.micro"
-  allocated_storage      = 10
-  max_allocated_storage  = 0 #to disable Storage Autoscaling.
-  engine                 = "mysql"
-  engine_version         = "8.0.28"
+  identifier            = "terraform-database"
+  instance_class        = "db.t3.micro"
+  allocated_storage     = 10
+  max_allocated_storage = 0 #to disable Storage Autoscaling.
+  engine                = "mysql"
+  engine_version        = "8.0.28"
 
   #credentials
-  username               = var.db_username
-  password               = var.db_password
+  username = var.db_username
+  password = var.db_password
 
   #db conf
-  db_name = var.db_name
+  db_name              = var.db_name
   parameter_group_name = "default.mysql8.0"
 
   #network conf
@@ -31,24 +31,24 @@ resource "aws_db_instance" "terr_db" {
   publicly_accessible    = false
   skip_final_snapshot    = true
 
-  backup_retention_period = 0
+  backup_retention_period    = 0
   auto_minor_version_upgrade = false
 
   apply_immediately = true
-  
+
 }
 
 
 #=====================================================================
-    #RDS Subnet group.
-    # designates a collection of subnets that your RDS instance can be
-    # provisioned in. This subnet group uses the subnets created by the
-    # VPC module.
+#RDS Subnet group.
+# designates a collection of subnets that your RDS instance can be
+# provisioned in. This subnet group uses the subnets created by the
+# VPC module.
 #=====================================================================
 
 resource "aws_db_subnet_group" "terr_db_subnet_group" {
   name       = "terr-db-subnet-group"
-  subnet_ids = [aws_subnet.terr_priv_subnet_1a.id,aws_subnet.terr_priv_subnet_1b.id]
+  subnet_ids = [aws_subnet.terr_priv_subnet_1a.id, aws_subnet.terr_priv_subnet_1b.id]
 
   tags = {
     Name = "terr-db-subnet-group"
