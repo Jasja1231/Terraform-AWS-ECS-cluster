@@ -86,20 +86,20 @@ resource "aws_ecs_task_definition" "terr_task_definition" {
       #ENV VAR
       environment = [
         {
-          name =  "WORDPRESS_DB_HOST"
+          name  = "WORDPRESS_DB_HOST"
           value = aws_db_instance.terr_db.address
         },
         {
-          name = "WORDPRESS_DB_NAME"
+          name  = "WORDPRESS_DB_NAME"
           value = var.db_name
         },
         {
           name  = "WORDPRESS_DB_PASSWORD"
-          value =  var.db_password
+          value = random_password.db_password.result #var.db_password
         },
         {
-          name = "WORDPRESS_DB_USER",
-          value =  var.db_username
+          name  = "WORDPRESS_DB_USER",
+          value = var.db_username
         }
       ]
       #ENV VAR
@@ -111,7 +111,7 @@ resource "aws_ecs_task_definition" "terr_task_definition" {
 
   #Set of launch types required by the task. The valid values are EC2 and FARGATE.
   requires_compatibilities = ["EC2"]
-  
+
 
   # volume {
   #   name      = "service-storage"
@@ -190,7 +190,7 @@ resource "aws_autoscaling_group" "terr_autoscaling_group" {
   #         key                 = "AmazonECSManaged" 
   #         propagate_at_launch = true  
   #       }
-    
+
 }
 
 
@@ -274,6 +274,8 @@ resource "aws_lb" "terr_load_balancer" {
 
 }
 
+
+
 resource "aws_lb_listener" "terr_80_listener" {
   load_balancer_arn = aws_lb.terr_load_balancer.arn
   port              = "80"
@@ -288,6 +290,36 @@ resource "aws_lb_listener" "terr_80_listener" {
     target_group_arn = aws_lb_target_group.terr_target_group.arn
   }
 }
+
+# resource "aws_lb_listener" "terr_443_listener" {
+#   load_balancer_arn = aws_lb.terr_load_balancer.arn
+#   port              = "443"
+#   protocol          = "HTTPS"
+#   # ssl_policy        = "ELBSecurityPolicy-2016-08"
+#   #certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+
+#   default_action {
+#     #(Required) Type of routing action. Valid values are forward,
+#     #redirect, fixed-response, authenticate-cognito and authenticate-oidc.
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.terr_target_group_443.arn
+#   }
+# }
+
+# resource "aws_lb_listener" "terr_22_listener" {
+#   load_balancer_arn = aws_lb.terr_load_balancer.arn
+#   port              = "22"
+#   protocol          = "TCP"
+#   # ssl_policy        = "ELBSecurityPolicy-2016-08"
+#   #certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+
+#   default_action {
+#     #(Required) Type of routing action. Valid values are forward,
+#     #redirect, fixed-response, authenticate-cognito and authenticate-oidc.
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.terr_target_group_ssh.arn
+#   }
+# }
 
 
 #=====================================================================

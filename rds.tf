@@ -19,7 +19,7 @@ resource "aws_db_instance" "terr_db" {
 
   #credentials
   username = var.db_username
-  password = var.db_password
+  password = random_password.db_password.result #var.db_password
 
   #db conf
   db_name              = var.db_name

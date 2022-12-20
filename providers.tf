@@ -22,9 +22,9 @@ terraform {
 #=====================================================================
 
 provider "aws" {
-  region                   = "eu-central-1"
-  shared_credentials_files = ["/home/yaryna/.aws/credentials"]
-  profile                  = "vscode"
+  region = "eu-central-1"
+  // shared_credentials_files = ["/home/yaryna/.aws/credentials"]
+  profile = "vscode"
 }
 
 #=====================================================================
